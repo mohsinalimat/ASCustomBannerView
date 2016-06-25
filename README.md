@@ -1,6 +1,7 @@
 # ASCustomBannerView
 
-This is a banner with similar style to the App Store.
+This is a banner with similar style to the App Store. It has auto swipe movement every 5 seconds and manual swipe to both sides.
+It can be used quickly only by passing an array of images
 
 Lenguage: Swift 2
 
