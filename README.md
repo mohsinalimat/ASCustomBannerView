@@ -1,7 +1,7 @@
 # ASCustomBannerView
 
 This is a banner with similar style to the App Store. It has auto-slide to left every 5 seconds and manual-slide to both sides.
-It can be used quickly only by passing an array of images
+It can be used quickly only by passing an array of images.
 
 Lenguage: Swift 2
 
