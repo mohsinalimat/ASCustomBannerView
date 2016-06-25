@@ -9,7 +9,7 @@ Author: Alan Roldan
 
 Example:
 
-<img src="GIF_ASCustomBannerView.gif" width="260" style="border:1px; solid #021a40;">
+<img src="GIF_ASCustomBannerView.gif" width="260" border="2">
 
 
 Files:
