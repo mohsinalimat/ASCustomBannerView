@@ -69,7 +69,6 @@ class BannerView: UIView
         
         if dragging && !moving
         {
-            self.dragging = true
             self.currentImage.frame.origin.x = position.x - oldX
             self.nextImage.frame.origin.x = self.currentImage.frame.origin.x + self.aspectWidth
             self.backImage.frame.origin.x = self.currentImage.frame.origin.x - self.aspectWidth
@@ -80,7 +79,6 @@ class BannerView: UIView
     {
         if dragging && !moving
         {
-            moving = true
             if self.currentImage.frame.origin.x < -self.aspectWidth/2
             {
                 UIView.animateWithDuration(0.25, delay: 0, options: UIViewAnimationOptions.BeginFromCurrentState, animations:
@@ -97,7 +95,6 @@ class BannerView: UIView
                     self.nextImage.image = self.list.getRear().image
                     self.nextImage.frame.origin.x = self.aspectWidth
                     self.dragging = false
-                    self.moving = false
                 }
             }
             else if self.currentImage.frame.origin.x < 0
@@ -109,7 +106,6 @@ class BannerView: UIView
                         self.backImage.frame.origin.x = self.currentImage.frame.origin.x-self.aspectWidth
                 }) { _ in
                     self.dragging = false
-                    self.moving = false
                 }
             }
                 
@@ -129,7 +125,6 @@ class BannerView: UIView
                     self.nextImage.image = self.list.getRear().image
                     self.nextImage.frame.origin.x = self.aspectWidth
                     self.dragging = false
-                    self.moving = false
                 }
             }
             else if self.currentImage.frame.origin.x > 0
@@ -141,8 +136,11 @@ class BannerView: UIView
                         self.nextImage.frame.origin.x = self.currentImage.frame.origin.x+self.aspectWidth
                 }) { _ in
                     self.dragging = false
-                    self.moving = false
                 }
+            }
+            else
+            {
+                self.dragging = false
             }
         }
     }
