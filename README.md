@@ -8,12 +8,12 @@ Lenguage: Swift 2
 Author: Alan Roldan
 
 
-Example:
+## Example:
 
 <img src="GIF_ASCustomBannerView.gif" width="260">
 
 
-Files:
+## Files:
 
 1. Example_ASCustomBannerView: 
 This is a example project.
@@ -23,26 +23,26 @@ The files for use this template. you must move these files within your project.
 
 
 
-How to use?
+## How to use?
 
-1. Create a variable of type BannerView:
-
-    @IBOutlet weak var baner: BannerView!
-
-2. Import images and create a array of images:
-
-    let imagesArray = [String]()
-    imagesArray = ["img1","img2","img3","img4"]
-
-3. Get screen size width:
-
-    let widthScreen = CGFloat()
-    widthScreen = UIScreen.mainScreen().bounds.width
-
-3. instantiate object:
-
-    baner.createBanner(imagesArray, widthScreen: widthScreen)
-
+Create a variable of type BannerView:
+``` swift
+@IBOutlet weak var baner: BannerView!
+```
+Import images and create a array of images:
+```swift
+let imagesArray = [String]()
+imagesArray = ["img1","img2","img3","img4"]
+```
+Get screen size width:
+```swift
+let widthScreen = CGFloat()
+widthScreen = UIScreen.mainScreen().bounds.width
+```
+Instantiate object:
+```swift
+baner.createBanner(imagesArray, widthScreen: widthScreen)
+```
 
 <img src="http://www.floridauniversitaria.es/es-ES/noticias/PublishingImages/aviso_importante.png" width="30"> Images should be for proper operation of 720x300
 
