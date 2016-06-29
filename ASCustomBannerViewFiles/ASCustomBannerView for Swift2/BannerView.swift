@@ -23,7 +23,6 @@ class BannerView: UIView
     private var auxImage = UIImageView()
     private var images = [UIImageView]()
     private var timer = NSTimer()
-    private var orientation = NSTimer()
     
     func createBanner(imagesArray:[String], widthScreen:CGFloat)
     {
