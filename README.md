@@ -10,6 +10,10 @@ Author: Alan Roldan
 
 ## Example:
 
+###Portrait
+<img src="GIF_ASCustomBannerView.gif" width="260">
+
+###Landscape
 <img src="GIF_ASCustomBannerView.gif" width="260">
 
 
