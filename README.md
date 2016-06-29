@@ -14,7 +14,7 @@ Author: Alan Roldan
 <img src="GIF_ASCustomBannerView.gif" width="260">
 
 ###Landscape
-<img src="GIF2_ASCustomBannerView.gif" width="600">
+<img src="GIF2_ASCustomBannerView.gif" width="400">
 
 
 ## Files:
