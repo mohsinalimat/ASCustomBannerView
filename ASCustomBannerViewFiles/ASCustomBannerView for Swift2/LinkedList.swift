@@ -31,6 +31,16 @@ class LinkedList
         return current.getNext().getImage()
     }
     
+    func getAfterRear()->UIImageView
+    {
+        return current.getNext().getNext().getImage()
+    }
+    
+    func getBeforePrevious()->UIImageView
+    {
+        return current.getBack().getBack().getImage()
+    }
+    
     func getSize()->Int
     {
         return self.size

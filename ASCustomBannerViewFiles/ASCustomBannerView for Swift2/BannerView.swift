@@ -20,20 +20,27 @@ class BannerView: UIView
     private var currentImage = UIImageView()
     private var nextImage = UIImageView()
     private var backImage = UIImageView()
+    private var auxImage = UIImageView()
+    private var images = [UIImageView]()
     private var timer = NSTimer()
+    private var orientation = NSTimer()
     
     func createBanner(imagesArray:[String], widthScreen:CGFloat)
     {
-        self.aspectWidth = widthScreen
-        self.aspectHeight = widthScreen*0.4166
+        if widthScreen > 415
+        {
+            self.aspectWidth = 415
+        }
+        else
+        {
+            self.aspectWidth = widthScreen
+        }
+        
+        self.aspectHeight = self.aspectWidth*0.4166
         self.dragging = false
         self.moving = false
         self.backgroundColor = UIColor.clearColor()
-        
         self.createImageList(imagesArray)
-        self.addSubview(currentImage)
-        self.addSubview(nextImage)
-        self.addSubview(backImage)
         
         timer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: Selector("actionAutoSlide"), userInfo: nil, repeats: true)
     }
@@ -45,12 +52,33 @@ class BannerView: UIView
             list.insert(UIImage(named: array[i])!)
         }
         
-        self.currentImage = UIImageView(image: self.list.getCurrent().image)
-        self.currentImage.frame = CGRect(x: 0, y: 0, width: self.aspectWidth, height: self.aspectHeight)
-        self.backImage = UIImageView(image: self.list.getPrevious().image)
-        self.backImage.frame = CGRect(x: -self.aspectWidth, y: 0, width: self.aspectWidth, height: self.aspectHeight)
-        self.nextImage = UIImageView(image: self.list.getRear().image)
-        self.nextImage.frame = CGRect(x: self.aspectWidth, y: 0, width: self.aspectWidth, height: self.aspectHeight)
+        for i in 0 ... 4
+        {
+            var imagen = UIImageView()
+            switch i {
+            case 0:
+                imagen.image = self.list.getBeforePrevious().image
+                break
+            case 1:
+                imagen.image = self.list.getPrevious().image
+                break
+            case 2:
+                imagen.image = self.list.getCurrent().image
+                break
+            case 3:
+                imagen.image = self.list.getRear().image
+                break
+            case 4:
+                imagen.image = self.list.getAfterRear().image
+                break
+            default:
+                break
+            }
+            self.images.append(imagen)
+            let initX = getInitX()+(self.aspectWidth*CGFloat(-2+i))
+            self.images[i].frame = CGRect(x: initX, y: 0, width: self.aspectWidth, height: self.aspectHeight)
+            self.addSubview(images[i])
+        }
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
@@ -67,11 +95,18 @@ class BannerView: UIView
     {
         let position :CGPoint = touches.first!.locationInView(self)
         
+        let centerInit = getInitX()
+        
         if dragging && !moving
         {
-            self.currentImage.frame.origin.x = position.x - oldX
-            self.nextImage.frame.origin.x = self.currentImage.frame.origin.x + self.aspectWidth
-            self.backImage.frame.origin.x = self.currentImage.frame.origin.x - self.aspectWidth
+            self.images[2].frame.origin.x = position.x - oldX + centerInit
+            for i in 0 ... 4
+            {
+                if i != 2
+                {
+                    self.images[i].frame.origin.x = self.images[2].frame.origin.x+(self.aspectWidth*CGFloat(-2+i))
+                }
+            }
         }
     }
     
@@ -79,61 +114,45 @@ class BannerView: UIView
     {
         if dragging && !moving
         {
-            if self.currentImage.frame.origin.x < -self.aspectWidth/2
+            let centerInit = getInitX()
+            
+            if self.images[2].frame.origin.x < centerInit-self.aspectWidth/2
             {
                 UIView.animateWithDuration(0.25, delay: 0, options: UIViewAnimationOptions.BeginFromCurrentState, animations:
                     {
-                        self.currentImage.frame.origin.x = -self.aspectWidth
-                        self.nextImage.frame.origin.x = self.currentImage.frame.origin.x+self.aspectWidth
-                        self.backImage.frame.origin.x = self.currentImage.frame.origin.x-self.aspectWidth
+                        self.moveToLeft()
                 }) { _ in
                     self.list.moveNext()
-                    self.backImage.image = self.list.getPrevious().image
-                    self.backImage.frame.origin.x = -self.aspectWidth
-                    self.currentImage.image = self.list.getCurrent().image
-                    self.currentImage.frame.origin.x = 0
-                    self.nextImage.image = self.list.getRear().image
-                    self.nextImage.frame.origin.x = self.aspectWidth
+                    self.resetImages()
                     self.dragging = false
                 }
             }
-            else if self.currentImage.frame.origin.x < 0
+            else if self.images[2].frame.origin.x < centerInit
             {
                 UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.BeginFromCurrentState, animations:
                     {
-                        self.currentImage.frame.origin.x = 0
-                        self.nextImage.frame.origin.x = self.currentImage.frame.origin.x+self.aspectWidth
-                        self.backImage.frame.origin.x = self.currentImage.frame.origin.x-self.aspectWidth
+                        self.resetImages()
                 }) { _ in
                     self.dragging = false
                 }
             }
                 
-            else if self.currentImage.frame.origin.x > self.aspectWidth/2
+            else if self.images[2].frame.origin.x > centerInit+self.aspectWidth/2
             {
                 UIView.animateWithDuration(0.25, delay: 0, options: UIViewAnimationOptions.BeginFromCurrentState, animations:
                     {
-                        self.currentImage.frame.origin.x = self.aspectWidth
-                        self.backImage.frame.origin.x = self.currentImage.frame.origin.x-self.aspectWidth
-                        self.nextImage.frame.origin.x = self.currentImage.frame.origin.x+self.aspectWidth
+                        self.moveToRight()
                 }) { _ in
                     self.list.moveBack()
-                    self.backImage.image = self.list.getPrevious().image
-                    self.backImage.frame.origin.x = -self.aspectWidth
-                    self.currentImage.image = self.list.getCurrent().image
-                    self.currentImage.frame.origin.x = 0
-                    self.nextImage.image = self.list.getRear().image
-                    self.nextImage.frame.origin.x = self.aspectWidth
+                    self.resetImages()
                     self.dragging = false
                 }
             }
-            else if self.currentImage.frame.origin.x > 0
+            else if self.images[2].frame.origin.x > centerInit
             {
                 UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.BeginFromCurrentState, animations:
                     {
-                        self.currentImage.frame.origin.x = 0
-                        self.backImage.frame.origin.x = self.currentImage.frame.origin.x-self.aspectWidth
-                        self.nextImage.frame.origin.x = self.currentImage.frame.origin.x+self.aspectWidth
+                        self.resetImages()
                 }) { _ in
                     self.dragging = false
                 }
@@ -149,23 +168,71 @@ class BannerView: UIView
     {
         if !dragging
         {
+            let centerInit = getInitX()
+            
             self.moving = true
             UIView.animateWithDuration(0.4, delay: 0, options: UIViewAnimationOptions.BeginFromCurrentState, animations:
                 {
-                    self.currentImage.frame.origin.x = -self.aspectWidth
-                    self.nextImage.frame.origin.x = self.currentImage.frame.origin.x+self.aspectWidth
-                    self.backImage.frame.origin.x = self.currentImage.frame.origin.x-self.aspectWidth
+                    self.moveToLeft()
             }) { _ in
                 self.list.moveNext()
-                self.backImage.image = self.list.getPrevious().image
-                self.backImage.frame.origin.x = -self.aspectWidth
-                self.currentImage.image = self.list.getCurrent().image
-                self.currentImage.frame.origin.x = 0
-                self.nextImage.image = self.list.getRear().image
-                self.nextImage.frame.origin.x = self.aspectWidth
+                self.resetImages()
                 self.moving = false
             }
         }
+    }
+    
+    private func resetImages()
+    {
+        let center = getInitX()
+    
+        for i in 0 ... 4
+        {
+            switch i {
+                case 0:
+                    self.images[i].image = self.list.getBeforePrevious().image
+                    break
+                case 1:
+                    self.images[i].image = self.list.getPrevious().image
+                    break
+                case 2:
+                    self.images[i].image = self.list.getCurrent().image
+                    break
+                case 3:
+                    self.images[i].image = self.list.getRear().image
+                    break
+                case 4:
+                    self.images[i].image = self.list.getAfterRear().image
+                    break
+                default:
+                    break
+            }
+            let initX = getInitX()+(self.aspectWidth*CGFloat(-2+i))
+            self.images[i].frame.origin.x = initX
+        }
+    }
+    
+    private func moveToLeft()
+    {
+        for i in 0 ... 4
+        {
+            let initX = getInitX()+(self.aspectWidth*CGFloat(-3+i))
+            self.images[i].frame.origin.x = initX
+        }
+    }
+    
+    private func moveToRight()
+    {
+        for i in 0 ... 4
+        {
+            let initX = getInitX()+(self.aspectWidth*CGFloat(-1+i))
+            self.images[i].frame.origin.x = initX
+        }
+    }
+    
+    private func getInitX()->CGFloat
+    {
+        return UIScreen.mainScreen().bounds.width/2 - aspectWidth/2
     }
     
     func getHeightSize()->CGFloat
